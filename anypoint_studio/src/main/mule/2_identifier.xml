@@ -5,7 +5,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
 	<file:config name="File_Config" doc:name="File Config" doc:id="70a47d7e-40e2-478b-b8f7-b8b0201876ac" />
-	<flow name="stagetrackFlow" doc:id="5feedefd-28a1-487f-839d-b9c16c6ec4c2" >
+	<flow name="identifierFlow" doc:id="5feedefd-28a1-487f-839d-b9c16c6ec4c2" >
 		<file:listener doc:name="On New or Updated File" doc:id="4a9f9f53-2f1d-47d5-b4bd-ab909895120f" config-ref="File_Configuration" directory="${directory}">
 			<scheduling-strategy >
 				<fixed-frequency frequency="10" timeUnit="SECONDS"/>

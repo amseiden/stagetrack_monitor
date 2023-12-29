@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<file:config name="File_Configuration" doc:name="File Config" doc:id="a599782b-cde0-481a-acef-0147ab1f15b9" >
 		<file:connection workingDir="${directory}" />
 	</file:config>
 	<configuration-properties doc:name="Configuration properties" doc:id="6aa8db4f-85ab-49ed-944f-f84305f3d693" file="stagetrack_${env}.yaml" />
-	<global-property doc:name="Global Property" doc:id="2af887c6-cf5b-4a4d-b9c4-69756362f3c1" name="env" value="QA" />
+	<global-property doc:name="Global Property" doc:id="2af887c6-cf5b-4a4d-b9c4-69756362f3c1" name="env_selector" value="QA" />
+	<http:listener-config name="HTTP_Listener_config_8081" doc:name="HTTP Listener config" doc:id="64a5f2f9-bab1-49e8-a9f4-1c6f20890dae" >
+		<http:listener-connection host="${listener.host}" port="${listener.port}" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_config_to_8082" doc:name="HTTP Request configuration" doc:id="5d1ee8d9-c8f8-464e-b86e-cc47f692b06d" basePath="/${requester.path}" >
+		<http:request-connection host="${requester.host}" port="${requester.port}" connectionIdleTimeout="300000" />
+	</http:request-config>
 	<error-handler name="0_global_Error_Handler" doc:id="bcebb76e-d064-4929-9f43-a21e91ba1a4e" >
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a4f2c9e3-4911-4bfc-9b76-347b0dc57703" >
 			<logger level="INFO" doc:name="Global error handler" doc:id="10f1d14e-3761-45cd-8484-0f92b1e655ad" message="GLOBAL error handler" />

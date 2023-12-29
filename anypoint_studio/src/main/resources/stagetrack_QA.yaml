@@ -1,3 +1,9 @@
+
+listener:
+  host: localhost
+  port: 8081
+  path: generate
+
 file: /Users/amseiden/Documents/Mule /stagetrack_monitor/excel/Book1.xlsx
 
 directory: /Users/amseiden/Documents/Mule /stagetrack_monitor/excel
