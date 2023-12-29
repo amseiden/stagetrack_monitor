@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<file:connection workingDir="${directory}" />
 	</file:config>
 	<configuration-properties doc:name="Configuration properties" doc:id="6aa8db4f-85ab-49ed-944f-f84305f3d693" file="stagetrack_${env}.yaml" />
-	<global-property doc:name="Global Property" doc:id="2af887c6-cf5b-4a4d-b9c4-69756362f3c1" name="env_selector" value="QA" />
+	<global-property doc:name="Global Property" doc:id="2af887c6-cf5b-4a4d-b9c4-69756362f3c1" name="env" value="QA" />
 	<http:listener-config name="HTTP_Listener_config_8081" doc:name="HTTP Listener config" doc:id="64a5f2f9-bab1-49e8-a9f4-1c6f20890dae" >
 		<http:listener-connection host="${listener.host}" port="${listener.port}" />
 	</http:listener-config>

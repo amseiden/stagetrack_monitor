@@ -1,0 +1,15 @@
+
+listener:
+  host: localhost
+  port: 8081
+  timeout: 300000
+  path: generate
+  
+requester: 
+  host: localhost
+  port: 8083
+  path: generate
+
+file: /Users/amseiden/Documents/Mule /stagetrack_monitor/excel/Book1.xlsx
+
+directory: /Users/amseiden/Documents/Mule /stagetrack_monitor/excel
