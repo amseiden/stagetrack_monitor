@@ -6,11 +6,6 @@
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
 	<file:config name="File_Config" doc:name="File Config" doc:id="70a47d7e-40e2-478b-b8f7-b8b0201876ac" />
 	<flow name="identifierFlow" doc:id="5feedefd-28a1-487f-839d-b9c16c6ec4c2" >
-		<file:listener doc:name="On New or Updated File" doc:id="4a9f9f53-2f1d-47d5-b4bd-ab909895120f" config-ref="File_Configuration" directory="${directory}">
-			<scheduling-strategy >
-				<fixed-frequency frequency="10" timeUnit="SECONDS"/>
-			</scheduling-strategy>
-		</file:listener>
 		<logger level="INFO" doc:name="stagetrackFlow START Log" doc:id="5109ea62-cc83-49d3-8997-78af113ea089" message="STARTED stagetrackFlow"/>
 		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="7e14d903-238a-46ac-a2b2-182d4f9c02c7" />
 		<logger level="INFO" doc:name="stagetrackFlow FINISH Log" doc:id="a8a84331-cc89-42e0-a65b-b3d912e47406" message="FINISHED stagetrackFlow" />

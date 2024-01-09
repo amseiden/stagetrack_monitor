@@ -9,4 +9,9 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	</http:listener-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="6aee3d82-d5fb-4645-9b13-64ec0b5adada" file="s_stagetrack_${env}.yaml" />
 	<global-property doc:name="Global Property" doc:id="f6c7d3e2-b0f0-4aba-b13b-64fb390d0af2" name="env" value="QA" />
+	<error-handler name="0_global_Error_Handler" doc:id="a491c5da-9ac5-4605-aa63-a7fb882f006f" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="06d842b3-e1c7-45b6-ba24-bffc45602a98" >
+			<logger level="INFO" doc:name="Global error handler" doc:id="22169ec4-67fa-46d1-8fdb-6c0da33333e2" message="GLOBAL error handler" />
+		</on-error-continue>
+	</error-handler>
 </mule>

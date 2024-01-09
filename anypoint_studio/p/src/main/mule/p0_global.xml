@@ -7,7 +7,14 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	<http:listener-config name="HTTP_Listener_config_8082" doc:name="HTTP Listener config" doc:id="001c79e0-7bae-44dd-b46c-dc45f91e6a7c" basePath="/${listener.path}" >
 		<http:listener-connection host="${listener.host}" port="${listener.port}" readTimeout="${listener.timeout}" />
 	</http:listener-config>
-	<http:request-config name="HTTP_Request_config_to_8083" doc:name="HTTP Request configuration" doc:id="da0e4fc1-12c0-4d6a-a1b2-7ea60157f3e2" />
+	<http:request-config name="HTTP_Request_config_to_8083" doc:name="HTTP Request configuration" doc:id="da0e4fc1-12c0-4d6a-a1b2-7ea60157f3e2" basePath="/${requester.path}">
+		<http:request-connection host="${requester.host}" port="${requester.port}" connectionIdleTimeout="${requester.timeout}" />
+	</http:request-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="5aec20df-c500-43b7-97f6-c406fc2706c1" file="p_stagetrack_${env}.yaml" />
 	<global-property doc:name="Global Property" doc:id="ce060138-5015-4a73-9630-c51a93058465" name="env" value="QA" />
+	<error-handler name="0_global_Error_Handler" doc:id="9cc18e57-131a-4f9e-8138-55ca114a0df3" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="91c6ea6b-6e08-4d83-af0b-0d0fc20b2bfe" >
+			<logger level="INFO" doc:name="Global error handler" doc:id="db2c99a6-2166-48a4-8d3a-12f1903c563c" message="GLOBAL error handler" />
+		</on-error-continue>
+	</error-handler>
 </mule>

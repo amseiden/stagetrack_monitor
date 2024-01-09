@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="p1_generateEAN" doc:id="7dc70c35-60b4-4614-aa70-941d6bb689a3">
+		<http:listener doc:name="Listener" doc:id="fa27e502-6c5d-4316-ad4b-e9dc05dc7a1b" config-ref="HTTP_Listener_config_8082" path="/ean" />
+		<logger level="INFO" doc:name="START" doc:id="daae816c-ea3b-477e-a45a-96b95a9e65ba" message="STARTED p1_generateEAN flow" />
+		<set-variable value='#[now() as String {format: "MMddhhmmssSSS"}]' doc:name="generatedEAN" doc:id="afc2e888-651c-4f44-8db4-857a400491e2" variableName="generatedEAN"/>
+		<set-payload value="#[vars.generatedEAN as String]" doc:name="Set Payload to generatedEAN" doc:id="8da04024-6105-4c7b-90ea-9a7890a4e71b" />
+		<logger level="INFO" doc:name="FINISH" doc:id="486f3b40-893f-425e-a4e7-eefa409dc4bb" message="FINISGED p1_generateEAN flow" />
+	</flow>
+	<flow name="p1_generateUPC" doc:id="956d7307-7510-4826-9fcf-101c05a75fd7">
+		<http:listener doc:name="Listener" doc:id="ba6edf67-0043-4ae1-85df-542f6e527013" config-ref="HTTP_Listener_config_8082" path="/upc" />
+		<logger level="INFO" doc:name="START" doc:id="041b42e7-1a6c-4796-9fc9-637598d48ef1" message="STARTED p1_generateUPC flow" />
+		<set-variable value='#[now() as String {format: "MMddhhmmssSS"}]' doc:name="generatedUPC" doc:id="3f5d12fe-a953-4e0e-9f3e-8058d5c645b9" variableName="generatedUPC"/>
+		<set-payload value="#[vars.generatedUPC as String]" doc:name="Set Payload to generatedUPC" doc:id="652e3c6e-7329-4ef3-a02c-5369cdd8d533" />
+		<logger level="INFO" doc:name="FINISH" doc:id="246ef128-0744-445c-9db5-79c4594c50ba" message="FINISHED p1_generateUPC flow" />
+	</flow>
+	<flow name="p1_generateQR" doc:id="4e6f8a8a-570f-4506-9c8c-352532e29d06">
+		<http:listener doc:name="8082 Listener" doc:id="17714eb2-4b50-464f-8452-7008f2eeffc9" config-ref="HTTP_Listener_config_8082" path="/qr" />
+		<logger level="INFO" doc:name="START" doc:id="a75e9337-3eb1-4159-9624-d200126f42b8" message="STARTED p1_generateQR flow" />
+		<set-variable value="#[uuid()]" doc:name="generatedQR" doc:id="acdf6b49-8dd6-41c5-96c1-34e9ec89ba2e" variableName="generatedQR"/>
+		<set-payload value="#[vars.generatedQR as String]" doc:name="Set Payload to generatedQR" doc:id="3cb31ae4-1d2c-452c-952e-47798f06fa1a" />
+		<logger level="INFO" doc:name="FINISH" doc:id="eff30916-efd9-4159-a65b-3c9f734043c1" message="FINISHED p1_generateQR flow" />
+	</flow>
+</mule>
