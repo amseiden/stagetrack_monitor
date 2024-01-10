@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="9dc72e87-263d-46bb-94de-4bc9f990cb4a" basePath="${listener.path}" >
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config_8083" doc:name="HTTP Listener config" doc:id="9dc72e87-263d-46bb-94de-4bc9f990cb4a">
 		<http:listener-connection host="${listener.host}" port="${listener.port}" readTimeout="${listener.timeout}" />
 	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration_to_8084" doc:name="HTTP Request configuration" doc:id="41b5e2ff-182a-4f15-9f92-880b3d794e8a" basePath="${requester.path}" responseTimeout="${requester.timeout}">
+		<http:request-connection host="${requester.host}" port="${requester.port}" connectionIdleTimeout="${requester.timeout}" />
+	</http:request-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="6aee3d82-d5fb-4645-9b13-64ec0b5adada" file="s_stagetrack_${env}.yaml" />
 	<global-property doc:name="Global Property" doc:id="f6c7d3e2-b0f0-4aba-b13b-64fb390d0af2" name="env" value="QA" />
+
+	<db:config name="Database_Config_sa_moara_dusmanii" doc:name="Database Config" doc:id="ecf3fd93-433b-4230-9aaa-133434955caa" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="root" database="${db.name}" />
+	</db:config>
 	<error-handler name="0_global_Error_Handler" doc:id="a491c5da-9ac5-4605-aa63-a7fb882f006f" >
 		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="06d842b3-e1c7-45b6-ba24-bffc45602a98" >
 			<logger level="INFO" doc:name="Global error handler" doc:id="22169ec4-67fa-46d1-8fdb-6c0da33333e2" message="GLOBAL error handler" />

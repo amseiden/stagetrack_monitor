@@ -1,5 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="p2_identifyFlow" doc:id="8036472b-8944-49ed-bf3f-a3548bbb403c" >
+		<http:listener doc:name="8082:GET/identify" doc:id="0f045939-b9a2-4a18-b717-d70c5d53f5cc" config-ref="HTTP_Listener_config_8082" path="${listener.path2}"/>
+		<choice doc:name="Choice" doc:id="2f49e820-1b45-42ab-a5e1-47f9a2932898" >
+			<when expression="#[sizeOf(attributes.queryParams.code)==13]">
+				<set-variable value="ean" doc:name="codetype ean" doc:id="3bc44374-f46c-4ee5-a87d-6fc64673fade" variableName="codetype"/>
+				<http:request method="GET" doc:name="8083?ean" doc:id="91df863d-454e-48e1-9c89-88b7e2edc929" config-ref="HTTP_Request_config_to_8083" path="${requester.path2}">
+					<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"codetype" : vars.codetype, 
+	"code" : attributes.queryParams.code
+}]]]></http:query-params>
+				</http:request>
+			</when>
+			<when expression="#[sizeOf(attributes.queryParams.code)==12]">
+				<set-variable value="upc" doc:name="codetype upc" doc:id="2e553f53-77f6-4c20-8562-8f0e62d1f49c" variableName="codetype"/>
+				<http:request method="GET" doc:name="8083?upc" doc:id="1175c060-d047-40cd-b826-61a1153de9db" config-ref="HTTP_Request_config_to_8083" path="${requester.path2}">
+					<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"codetype" : vars.codetype, 
+	"code" : attributes.queryParams.code
+}]]]></http:query-params>
+				</http:request>
+			</when>
+			<when expression="#[sizeOf(attributes.queryParams.code)==36]">
+				<set-variable value="qr" doc:name="codetype qr" doc:id="42ce383e-9cf3-4ccc-84fe-27da031dee61" variableName="codetype"/>
+				<http:request method="GET" doc:name="8083?qr" doc:id="d43fae65-7023-4722-95c0-5bc5308790bc" config-ref="HTTP_Request_config_to_8083" path="${requester.path2}">
+					<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"codetype" : vars.codetype, 
+	"code" : attributes.queryParams.code
+}]]]></http:query-params>
+				</http:request>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="p2 DEFAULT" doc:id="06175420-dd33-47a3-98a2-1a6dfa41a2ea" message="p2 DEFAULT"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

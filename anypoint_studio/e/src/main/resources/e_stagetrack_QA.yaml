@@ -2,12 +2,14 @@ listener:
   host: "localhost"
   port: "8081"
   path: "generate"
-  timeout: "300000"
+  path2: "identify"
+  timeout: "3000000"
   
 requester: 
   host: "localhost"
   port: "8082"
   path: "generate"
-  timeout: "300000"
+  path2: "identify"
+  timeout: "3000000"
 
 

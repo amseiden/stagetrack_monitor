@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 		<http:listener-connection host="${listener.host}" port="${listener.port}" readTimeout="${listener.timeout}"/>
 	</http:listener-config>
 	<configuration-properties doc:name="Configuration properties" doc:id="a4a51aa7-8d4e-46b0-8ca8-d886305e83b9" file="e_stagetrack_${env}.yaml" />
-	<http:request-config name="HTTP_Request_configuration_to_8082" doc:name="HTTP Request configuration" doc:id="9a50fab0-d89a-4b55-a074-5203c1a725a2" basePath="/${requester.path}" >
+	<http:request-config name="HTTP_Request_configuration_to_8082" doc:name="HTTP Request configuration" doc:id="9a50fab0-d89a-4b55-a074-5203c1a725a2" basePath="/${requester.path}" responseTimeout="${requester.timeout}">
 		<http:request-connection host="${requester.host}" port="${requester.port}" connectionIdleTimeout="${requester.timeout}"/>
 	</http:request-config>
 	<error-handler name="0_global_Error_Handler" doc:id="bcebb76e-d064-4929-9f43-a21e91ba1a4e" >

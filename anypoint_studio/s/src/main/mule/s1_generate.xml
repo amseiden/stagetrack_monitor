@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="s1_generateFlow" doc:id="c77506f5-cbeb-4d50-8ec0-c42a7c8de59c" >
+		<http:listener doc:name="8083:POST/generate" doc:id="794aa974-83fb-48ff-8326-e49b2ad45fa5" config-ref="HTTP_Listener_config_8083" path="${listener.path}"/>
+		<logger level="INFO" doc:name="START" doc:id="15b79d04-cc2e-4a6c-9ea3-2b0992ddfede" message="STARTED s1_generateFlow"/>
+		<set-variable value="#[attributes.headers.codetype]" doc:name="set codetype" doc:id="98075c58-55a5-4492-84c6-0815d8a49186" variableName="codetype"/>
+		<db:insert doc:name="Insert" doc:id="ce840a4c-42aa-4dee-a775-858733aca1a8" config-ref="Database_Config_sa_moara_dusmanii" queryTimeout="3000">
+			<db:sql ><![CDATA[INSERT INTO `ean` (`id`, `barcode`, `stage`) VALUES (NULL, :barcode, NULL);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'table': attributes.headers.codetype, 'barcode': payload}]]]></db:input-parameters>
+		</db:insert>
+		<logger level="INFO" doc:name="INSERTED" doc:id="2ba35b72-96f5-449d-85d7-00938b0b9d32" message="DB INSERT DONE"/>
+<!-- [STUDIO:"Request_to_8084"]		<http:request method="POST" doc:name="Request_to_8084" doc:id="bcbe7303-f553-42bb-9940-1abcdadb4912" config-ref="HTTP_Request_configuration_to_8084" path='#["/" ++ vars.codetype as String]' /> [STUDIO] -->
+		<logger level="INFO" doc:name="FINISH" doc:id="db2201ef-7afa-4e9d-9318-e5b74a74aa22" message="FINISHED s1_generateFlow"/>
+	</flow>
+</mule>

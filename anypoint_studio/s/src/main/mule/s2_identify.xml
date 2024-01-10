@@ -1,5 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<flow name="s2_identifyFlow" doc:id="a597f840-6cc3-4564-af9d-4ebbc9a9ce74" >
+		<http:listener doc:name="8083:GET/identify" doc:id="548d589b-def3-4f29-a7d0-047af16d2ebb" config-ref="HTTP_Listener_config_8083" path="${listener.path2}"/>
+		<logger level="INFO" doc:name="START s2_identifyFlow" doc:id="4265cfdc-2bce-4b7d-95bd-90fd9bdbdfb1" message="STARTED s2_identifyFlow"/>
+		<set-payload value="#[attributes.queryParams.code]" doc:name='Set Payload to "code"' doc:id="7e12604d-46a9-4cfd-89d8-e29adb5f96d7" />
+		<choice doc:name="codetype" doc:id="89f4140d-10ba-4725-8051-81347738b454" >
+			<when expression='#[attributes.queryParams.codetype=="ean"]'>
+				<flow-ref doc:name="--&gt; s2_identifyEAN" doc:id="4050be0b-b515-45f2-88d6-47bea14683e2" name="s2_identifyEAN"/>
+			</when>
+			<when expression='attributes.queryParams.codetype=="upc"'>
+				<flow-ref doc:name="--&gt; s2_identifyUPC" doc:id="62712471-5660-43f8-80a8-1042e3e475eb" name="s2_identifyUPC"/>
+			</when>
+			<when expression='attributes.queryParams.codetype=="qr"'>
+				<flow-ref doc:name="--&gt; s2_identifyQR" doc:id="b3d90b77-1b71-486d-bf3b-9306237fbf88" name="s2_identifyQR"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="fca17931-0e4d-4c9e-8dd6-19541b675b56" />
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="java&gt;json" doc:id="bb76a595-e5e8-4bc6-977f-3d0901064504" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+	payload[0]
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<validation:is-not-null doc:name="'stage' value" doc:id="de50c2b9-f9e3-4042-ab6b-f56268e68089" value="#[payload[0]]" message='"STAGE VALUE NOT FOUND"'/>
+		<logger level="INFO" doc:name="FINISH s2_identifyFlow" doc:id="9109cb22-5c33-4a02-aaca-19759afa2562" message="FINISHED s2_identifyFlow"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="f1859468-972e-4cd8-8ff5-47806c8c249d" type="VALIDATION:NULL">
+				<set-payload value="#[error.description]" doc:name="error.description" doc:id="adea5355-5ba9-406e-8356-2adfca2200ad" />
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	<sub-flow name="s2_identifyEAN" doc:id="db875b74-6eec-4eb8-b7e2-f23d59e2dfbd">
+		<db:select doc:name="Select stage" doc:id="21e92356-c61d-4e87-8d67-d98450b114e1" config-ref="Database_Config_sa_moara_dusmanii">
+			<db:sql><![CDATA[SELECT stage
+FROM ean
+WHERE barcode = :code 
+]]></db:sql>
+			<db:input-parameters><![CDATA[#[{
+	code: payload as String
+}]]]></db:input-parameters>
+		</db:select>
+	</sub-flow>
+	<sub-flow name="s2_identifyUPC" doc:id="181ffdc3-ab1a-4fb8-96dc-04766e68665d" >
+		<db:select doc:name="Select stage" doc:id="98fc1f01-d5b8-494b-a65c-18d68ff91613" config-ref="Database_Config_sa_moara_dusmanii">
+			<db:sql ><![CDATA[SELECT stage
+FROM upc
+WHERE barcode = :code 
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	code: payload as String
+}]]]></db:input-parameters>
+		</db:select>
+	</sub-flow>
+	<sub-flow name="s2_identifyQR" doc:id="c6224ee6-68e6-459b-8464-837e7d381e5a" >
+		<db:select doc:name="Select stage" doc:id="5f073694-457d-4c43-b93c-e072d21fd9f5" config-ref="Database_Config_sa_moara_dusmanii">
+			<db:sql ><![CDATA[SELECT stage
+FROM upc
+WHERE barcode = :code 
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	code: payload as String
+}]]]></db:input-parameters>
+		</db:select>
+	</sub-flow>
+</mule>

@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_db875b74_6eec_4eb8_b7e2_f23d59e2dfbd_Output_Payload = Array<{| stage?: String |}>
+
