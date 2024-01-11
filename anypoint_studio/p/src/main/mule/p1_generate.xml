@@ -19,7 +19,8 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<http:query-params ><![CDATA[#[output application/java
 ---
 {
-	"codetype" : "ean"
+	"codetype" : "ean",
+	"stage" : attributes.queryParams.stage
 }]]]></http:query-params>
 		</http:request>
 		<logger level="INFO" doc:name="FINISH" doc:id="486f3b40-893f-425e-a4e7-eefa409dc4bb" message="FINISGED p1_generateEAN flow" />
@@ -35,6 +36,12 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 {
 	"codetype" : "upc"
 }]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"codetype" : "upc",
+	"stage" : attributes.queryParams.stage
+}]]]></http:query-params>
 		</http:request>
 		<logger level="INFO" doc:name="FINISH" doc:id="246ef128-0744-445c-9db5-79c4594c50ba" message="FINISHED p1_generateUPC flow" />
 	</flow>
@@ -49,6 +56,12 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 {
 	"codetype" : "qr"
 }]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"codetype" : "qr",
+	"stage" : attributes.queryParams.stage
+}]]]></http:query-params>
 		</http:request>
 		<logger level="INFO" doc:name="FINISH" doc:id="eff30916-efd9-4159-a65b-3c9f734043c1" message="FINISHED p1_generateQR flow" />
 	</flow>

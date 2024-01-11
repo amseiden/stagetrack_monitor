@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="p2_identifyFlow" doc:id="8036472b-8944-49ed-bf3f-a3548bbb403c" >
 		<http:listener doc:name="8082:GET/identify" doc:id="0f045939-b9a2-4a18-b717-d70c5d53f5cc" config-ref="HTTP_Listener_config_8082" path="${listener.path2}"/>
-		<choice doc:name="Choice" doc:id="2f49e820-1b45-42ab-a5e1-47f9a2932898" >
+		<logger level="INFO" doc:name="START p2_identifyFlow" doc:id="27e794d7-b073-4720-a300-475807f9d1c8" message="STARTED p2_identifyFlow" />
+		<choice doc:name="identify codetype" doc:id="2f49e820-1b45-42ab-a5e1-47f9a2932898" >
 			<when expression="#[sizeOf(attributes.queryParams.code)==13]">
 				<set-variable value="ean" doc:name="codetype ean" doc:id="3bc44374-f46c-4ee5-a87d-6fc64673fade" variableName="codetype"/>
 				<http:request method="GET" doc:name="8083?ean" doc:id="91df863d-454e-48e1-9c89-88b7e2edc929" config-ref="HTTP_Request_config_to_8083" path="${requester.path2}">
@@ -45,5 +47,27 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<logger level="INFO" doc:name="p2 DEFAULT" doc:id="06175420-dd33-47a3-98a2-1a6dfa41a2ea" message="p2 DEFAULT"/>
 			</otherwise>
 		</choice>
+		<validation:validate-size doc:name="check 'code' correctness" doc:id="77bd8495-1e55-4315-ad26-a9108f74cc03" value="#[payload]" min="1" message='#["INVALID CODE"]'/>
+		<ee:transform doc:name="refactor response" doc:id="c274e848-972d-4633-ac2e-05be5679a706">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"stage": payload[0]
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<validation:is-not-null doc:name="check 'stage' value existence" doc:id="cffebbad-8341-4a2d-8e50-6f1775f12fdd" message='"STAGE VALUE NOT FOUND"' value="#[payload.stage]"/>
+		<logger level="INFO" doc:name="FINISH p2_identifyFlow" doc:id="46ca0985-34b4-482d-b45f-1a7eb14378c4" message="FINISHED p2_identifyFlow" />
+		<error-handler>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5e00f8db-55d0-453e-9aa3-d5f7f8cc097c" type="VALIDATION:INVALID_SIZE">
+				<set-payload value='#["INVALID CODE"]' doc:name="INVALID CODE" doc:id="1d5ee55f-febd-497c-94d5-4579b963c02d" />
+			</on-error-continue>
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="3b537bff-1b4f-466d-90fe-2d3466e5c1f1" type="VALIDATION:NULL">
+				<set-payload value="#[error.description]" doc:name="NOT FOUND" doc:id="7f2b01af-1331-44de-b4b5-1e8f34927463" />
+			</on-error-continue>
+		</error-handler>
 	</flow>
 </mule>

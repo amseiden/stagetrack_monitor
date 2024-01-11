@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	
+	
+	<flow name="e1_GenerateQRCodeFlow">
+    <!-- Generare UUID -->
+    <http:listener doc:name="8081:POST/generate" doc:id="3d7f878d-5b3d-465d-a6fa-8693f96d5de2" config-ref="HTTP_Listener_config_8081" path="${listener.path}"/>
+		<logger level="INFO" doc:name="START " doc:id="0b587a34-1472-4fc5-b08f-63b484944e62" message="STARTED e1_GenerateQRCodeFlow"/>
+		<set-variable value='#["/" ++ (attributes.queryParams.codetype default "")]' doc:name="requesterPath" doc:id="510bf59d-f31c-4816-8acd-3bf1150fcb28" variableName="requesterPath"/>
+		<choice doc:name="Choice" doc:id="f40bdcee-348d-43cd-a4d2-f464bd2636f3" >
+			<when expression='#[vars.requesterPath=="/ean"]'>
+				<http:request method="POST" doc:name="ean p_stagetrack" doc:id="be2997b0-1afc-4967-9045-647ed6406ef9" config-ref="HTTP_Request_configuration_to_8082" path='#[vars.requesterPath]' responseTimeout="300000">
+					<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"stage" : attributes.queryParams.stage
+}]]]></http:query-params>
+				</http:request>
+			</when>
+			<when expression='#[vars.requesterPath=="/upc"]'>
+				<http:request method="GET" doc:name="upc p_stagetrack" doc:id="46cb8014-86b2-4a02-b910-d212310c277f" config-ref="HTTP_Request_configuration_to_8082" path="#[vars.requesterPath]" responseTimeout="300000">
+					<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"stage" : attributes.queryParams.stage
+}]]]></http:query-params>
+				</http:request>
+			</when>
+			<when expression='#[vars.requesterPath=="/qr"]'>
+				<http:request method="GET" doc:name="qr p_stagetrack" doc:id="b9d84d8a-f6c9-400d-8fec-68211a1cd6a2" path="#[vars.requesterPath]" config-ref="HTTP_Request_configuration_to_8082" responseTimeout="300000">
+					<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"stage" : attributes.queryParams.stage
+}]]]></http:query-params>
+				</http:request>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="e1 DEFAULT" doc:id="9fc26764-fd09-426f-8030-63209f2a0ae4" message="e1 DEFAULT"/>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="to string" doc:id="7cb66861-3048-4b57-9eef-1e565ee51ad7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"code": payload as String
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<validation:validate-size doc:name="check code size " doc:id="19127c13-1599-4311-8370-a0759e09a5bc" value="#[payload.code]" min="3"/>
+		<logger level="INFO" doc:name="FINISH" doc:id="972f867a-00a8-4a33-a388-609052d72b8c" message="FINISHED e1_GenerateQRCodeFlow"/>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="1f26fb79-ce67-4bfa-ba8e-58e1aee98f03" type="VALIDATION:INVALID_SIZE">
+				<set-payload value='#["INVALID CODETYPE"]' doc:name="INVALID CODETYPE" doc:id="67dab657-5221-4dea-8a77-8359b98d5649" />
+			</on-error-continue>
+		</error-handler>
+    
+    <!-- Generare QR code pentru UUID -->
+
+    <!-- Alte pași pentru gestionarea entităților circulante -->
+	</flow>
+	
+	</mule>

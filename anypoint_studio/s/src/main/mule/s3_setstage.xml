@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="s3_setstageEAN" doc:id="f54c083f-3b25-4780-848b-91b8273640fb" >
+		<db:update doc:name="UpdateEAN" doc:id="60a11e89-95e2-4596-9840-3a3fb65bd722" config-ref="Database_Config_sa_moara_dusmanii">
+			<db:sql ><![CDATA[UPDATE `ean` SET `stage` = :stage WHERE `barcode` = :code;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'stage': attributes.queryParams.stage, 'code': attributes.queryParams.code}]]]></db:input-parameters>
+		</db:update>
+	</sub-flow>
+	<sub-flow name="s3_setstageUPC" doc:id="709b259b-e057-475b-9cb6-24f05c0561ef" >
+		<db:update doc:name="UpdateUPC" doc:id="beb56876-efce-4d35-9079-8a3ed155f504" config-ref="Database_Config_sa_moara_dusmanii">
+			<db:sql ><![CDATA[UPDATE `upc` SET `stage` = :stage WHERE `barcode` = :code ;
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'stage': attributes.queryParams.stage, 'code': attributes.queryParams.code}]]]></db:input-parameters>
+		</db:update>
+	</sub-flow>
+	<sub-flow name="s3_setstageQR" doc:id="aaea1270-5759-40c6-a55d-4b2994b7cbed" >
+		<db:update doc:name="UpdateQR" doc:id="5df7bd8a-c03f-4a11-85e5-b3eebe22da34" config-ref="Database_Config_sa_moara_dusmanii">
+			<db:sql ><![CDATA[UPDATE `qr` SET `stage` = :stage WHERE `barcode` = :code ;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'stage': attributes.queryParams.stage, 'code': attributes.queryParams.code}]]]></db:input-parameters>
+		</db:update>
+	</sub-flow>
+	<flow name="s3_setstageFlow" doc:id="fa7a98f8-9b23-46b0-a2e8-1b6633fae5ca" >
+		<http:listener doc:name="8083:PUT/setstage" doc:id="14abccb4-e8cb-4bf6-adb6-96c1de25c9d1" config-ref="HTTP_Listener_config_8083" path="${listener.path3}"/>
+		<logger level="INFO" doc:name="START" doc:id="562989ac-cfe1-475d-a780-fca04d2ecdac" message="STARTED s3_setstageFlow" />
+		<choice doc:name="codetype" doc:id="6cbf9c8b-8cad-4f8c-aa5e-190ebbe8a3e0">
+			<when expression='#[attributes.queryParams.codetype=="ean"]'>
+				<flow-ref doc:name="s3_setstageEAN" doc:id="4d771603-4d52-4711-a8a6-656f1f03e2bb" name="s3_setstageEAN" />
+			</when>
+			<when expression='#[attributes.queryParams.codetype=="upc"]'>
+				<flow-ref doc:name="s3_setstageUPC" doc:id="b09614b0-7c6f-457e-be26-ce04d69c1a48" name="s3_setstageUPC" />
+			</when>
+			<when expression='#[attributes.queryParams.codetype=="qr"]'>
+				<flow-ref doc:name="s3_setstageQR" doc:id="953dc56f-3345-4b56-a914-73055fb510a6" name="s3_setstageQR" />
+			</when>
+			<otherwise>
+				<logger level="ERROR" doc:name="Logger" doc:id="516c4daf-e3b2-4122-8ac4-56b2507b93ac" />
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="FINISH" doc:id="8c2e64b3-3caa-4036-8c20-bffa8c76d969" message="FINISHED s3_setstageFlow" />
+	</flow>
+</mule>

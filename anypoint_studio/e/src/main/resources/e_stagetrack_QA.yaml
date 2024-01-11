@@ -3,6 +3,7 @@ listener:
   port: "8081"
   path: "generate"
   path2: "identify"
+  path3: "setstage"
   timeout: "3000000"
   
 requester: 
@@ -10,6 +11,7 @@ requester:
   port: "8082"
   path: "generate"
   path2: "identify"
+  path3: "setstage"
   timeout: "3000000"
 
 

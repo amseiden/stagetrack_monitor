@@ -1,0 +1,4 @@
+%dw 2.0
+
+type auto_8876532f_2732_4ab5_ab08_ea5474c8696a_Output_Variables_codetype = String | Null
+

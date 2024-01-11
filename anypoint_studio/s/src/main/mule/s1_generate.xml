@@ -5,16 +5,46 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="insertEAN" doc:id="8876532f-2732-4ab5-ab08-ea5474c8696a">
+		<db:insert doc:name="ean" doc:id="ce840a4c-42aa-4dee-a775-858733aca1a8" config-ref="Database_Config_sa_moara_dusmanii" queryTimeout="3000">
+			<db:sql><![CDATA[INSERT INTO `ean` (`id`, `barcode`, `stage`) VALUES (NULL, :barcode, :stage);]]></db:sql>
+			<db:input-parameters><![CDATA[#[{'stage': attributes.queryParams.stage, 'barcode': payload}]]]></db:input-parameters>
+		</db:insert>
+	</sub-flow>
+	<sub-flow name="insertUPC" doc:id="9dd98727-ffb2-4f93-bdc6-34bc8b5cb157" >
+		<db:insert doc:name="upc" doc:id="29eb23e9-8394-4150-90c4-3385ecbe1a13" config-ref="Database_Config_sa_moara_dusmanii">
+			<db:sql ><![CDATA[INSERT INTO `upc` (`id`, `barcode`, `stage`) VALUES (NULL, :barcode, :stage);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'stage': attributes.queryParams.stage, 'barcode': payload}]]]></db:input-parameters>
+		</db:insert>
+	</sub-flow>
+	<sub-flow name="insertQR" doc:id="1e1d924a-bc3e-4660-95fa-e99c673b0168" >
+		<db:insert doc:name="qr" doc:id="1fd931d3-d3dc-42ac-bafa-e4c2710ad056" config-ref="Database_Config_sa_moara_dusmanii">
+			<db:sql ><![CDATA[INSERT INTO `qr` (`id`, `barcode`, `stage`) VALUES (NULL, :barcode, :stage);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'stage': attributes.queryParams.stage, 'barcode': payload}]]]></db:input-parameters>
+		</db:insert>
+	</sub-flow>
 	<flow name="s1_generateFlow" doc:id="c77506f5-cbeb-4d50-8ec0-c42a7c8de59c" >
 		<http:listener doc:name="8083:POST/generate" doc:id="794aa974-83fb-48ff-8326-e49b2ad45fa5" config-ref="HTTP_Listener_config_8083" path="${listener.path}"/>
 		<logger level="INFO" doc:name="START" doc:id="15b79d04-cc2e-4a6c-9ea3-2b0992ddfede" message="STARTED s1_generateFlow"/>
 		<set-variable value="#[attributes.headers.codetype]" doc:name="set codetype" doc:id="98075c58-55a5-4492-84c6-0815d8a49186" variableName="codetype"/>
-		<db:insert doc:name="Insert" doc:id="ce840a4c-42aa-4dee-a775-858733aca1a8" config-ref="Database_Config_sa_moara_dusmanii" queryTimeout="3000">
-			<db:sql ><![CDATA[INSERT INTO `ean` (`id`, `barcode`, `stage`) VALUES (NULL, :barcode, NULL);]]></db:sql>
-			<db:input-parameters ><![CDATA[#[{'table': attributes.headers.codetype, 'barcode': payload}]]]></db:input-parameters>
-		</db:insert>
+		<set-variable value="#[payload as String]" doc:name="set generated" doc:id="311901bf-da95-469e-ae66-3cf3dd87902d" variableName="generated"/>
+		<choice doc:name="Choice" doc:id="14135929-033a-4442-bd59-0dd592679959" >
+			<when expression='#[vars.codetype=="ean"]'>
+				<flow-ref doc:name="insertEAN" doc:id="9a4f9055-0a09-4a98-a2d8-9b62fbb957f8" name="insertEAN" />
+			</when>
+			<when expression='vars.codetype=="upc"'>
+				<flow-ref doc:name="insertUPC" doc:id="63a31b4c-0d19-4769-8114-1afd4183dc8a" name="insertUPC"/>
+			</when>
+			<when expression='vars.codetype=="qr"'>
+				<flow-ref doc:name="insertQR" doc:id="e4ea4b0f-7e15-460f-955e-f71a34e78333" name="insertQR"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name='missing or wring "codetype"' doc:id="b51bd96a-64c8-4255-b2ad-54be8e040a80" message='missing or wring "codetype"'/>
+			</otherwise>
+		</choice>
 		<logger level="INFO" doc:name="INSERTED" doc:id="2ba35b72-96f5-449d-85d7-00938b0b9d32" message="DB INSERT DONE"/>
-<!-- [STUDIO:"Request_to_8084"]		<http:request method="POST" doc:name="Request_to_8084" doc:id="bcbe7303-f553-42bb-9940-1abcdadb4912" config-ref="HTTP_Request_configuration_to_8084" path='#["/" ++ vars.codetype as String]' /> [STUDIO] -->
+<set-payload value="#[vars.generated as String]" doc:name="save generated" doc:id="0d053fd4-3b8b-4a4c-b06b-88b315efa635" />
+		<!-- [STUDIO:"Request_to_8084"]		<http:request method="POST" doc:name="Request_to_8084" doc:id="bcbe7303-f553-42bb-9940-1abcdadb4912" config-ref="HTTP_Request_configuration_to_8084" path='#["/" ++ vars.codetype as String]' /> [STUDIO] -->
 		<logger level="INFO" doc:name="FINISH" doc:id="db2201ef-7afa-4e9d-9318-e5b74a74aa22" message="FINISHED s1_generateFlow"/>
 	</flow>
 </mule>
