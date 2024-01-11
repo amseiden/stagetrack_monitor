@@ -6,10 +6,10 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="p3_setstageFlow" doc:id="ab046383-20f6-4738-8bdb-df3e85a0f1cd" >
-		<http:listener doc:name="8082:PUT/setstage" doc:id="cf056026-3c05-4d84-9016-c07c43bb8c2d" config-ref="HTTP_Listener_config_8082" path="${listener.path3}"/>
+		<http:listener doc:name="8082:PUT/setstage" doc:id="cf056026-3c05-4d84-9016-c07c43bb8c2d" config-ref="HTTP_Listener_config" path="${listener.path3}"/>
 		<logger level="INFO" doc:name="START" doc:id="78fe0299-6dd3-4600-90a9-3be55cbf283a" message="STARTED p3_setstageFlow"/>
-		<set-variable value="#[attributes.queryParams.code]" doc:name="'code'" doc:id="68b7a80e-b117-451f-a2cc-1f0fbc98350c" variableName="code"/>
-		<set-variable value="#[attributes.queryParams.stage]" doc:name="'stage'" doc:id="0e3a6932-cda9-4776-a100-84fe0b575d43" variableName="stage"/>
+		<set-variable value="#[attributes.queryParams.code]" doc:name="'code'" doc:id="68b7a80e-b117-451f-a2cc-1f0fbc98350c" variableName="code" />
+		<set-variable value="#[attributes.queryParams.stage]" doc:name="'stage'" doc:id="0e3a6932-cda9-4776-a100-84fe0b575d43" variableName="stage" />
 		<choice doc:name="identify codetype" doc:id="8b6a2187-9964-4226-b705-aa62bb553874">
 			<when expression="#[sizeOf(attributes.queryParams.code)==13]">
 				<set-variable value="ean" doc:name="codetype ean" doc:id="952992a9-1fc8-4391-a912-31d0b1cf65dc" variableName="codetype" />
@@ -51,7 +51,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<logger level="INFO" doc:name="p2 DEFAULT" doc:id="58af8535-6013-4b6c-827e-19af1fbe7c4c" message="p2 DEFAULT" />
 			</otherwise>
 		</choice>
-		<ee:transform doc:name="refactor output" doc:id="55e62251-24f8-4af9-ad9f-9d22918ff2e1" >
+		<ee:transform doc:name="response payload" doc:id="55e62251-24f8-4af9-ad9f-9d22918ff2e1" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json

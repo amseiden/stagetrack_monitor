@@ -5,64 +5,48 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<flow name="p1_generateEAN" doc:id="7dc70c35-60b4-4614-aa70-941d6bb689a3">
-		<http:listener doc:name="8082:POST/generate/ean" doc:id="fa27e502-6c5d-4316-ad4b-e9dc05dc7a1b" config-ref="HTTP_Listener_config_8082" path="/ean" />
-		<logger level="INFO" doc:name="START" doc:id="daae816c-ea3b-477e-a45a-96b95a9e65ba" message="STARTED p1_generateEAN flow" />
-		<set-variable value='#[now() as String {format: "MMddhhmmssSSS"}]' doc:name="generatedEAN" doc:id="afc2e888-651c-4f44-8db4-857a400491e2" variableName="generatedEAN"/>
-		<set-payload value="#[vars.generatedEAN as String]" doc:name="Set Payload to generatedEAN" doc:id="8da04024-6105-4c7b-90ea-9a7890a4e71b" />
-		<http:request method="POST" doc:name="Request_to_8083" doc:id="8190eaa7-e4df-4e0a-a055-59f0bf18876b" config-ref="HTTP_Request_config_to_8083" path="/${requester.path}">
-			<http:headers ><![CDATA[#[output application/java
----
-{
-	"codetype" : "ean"
-}]]]></http:headers>
-			<http:query-params ><![CDATA[#[output application/java
----
-{
-	"codetype" : "ean",
-	"stage" : attributes.queryParams.stage
-}]]]></http:query-params>
-		</http:request>
-		<logger level="INFO" doc:name="FINISH" doc:id="486f3b40-893f-425e-a4e7-eefa409dc4bb" message="FINISGED p1_generateEAN flow" />
-	</flow>
-	<flow name="p1_generateUPC" doc:id="956d7307-7510-4826-9fcf-101c05a75fd7">
-		<http:listener doc:name="8082:POST/generate/upc" doc:id="ba6edf67-0043-4ae1-85df-542f6e527013" config-ref="HTTP_Listener_config_8082" path="/upc" />
-		<logger level="INFO" doc:name="START" doc:id="041b42e7-1a6c-4796-9fc9-637598d48ef1" message="STARTED p1_generateUPC flow" />
-		<set-variable value='#[now() as String {format: "MMddhhmmssSS"}]' doc:name="generatedUPC" doc:id="3f5d12fe-a953-4e0e-9f3e-8058d5c645b9" variableName="generatedUPC"/>
-		<set-payload value="#[vars.generatedUPC as String]" doc:name="Set Payload to generatedUPC" doc:id="652e3c6e-7329-4ef3-a02c-5369cdd8d533" />
-		<http:request method="POST" doc:name="Request_to_8083" doc:id="23a51433-ba7a-4fac-a0cf-e154fa4fc9b2" config-ref="HTTP_Request_config_to_8083" path="/${requester.path}">
-			<http:headers ><![CDATA[#[output application/java
+	<flow name="p1_generateFlow" doc:id="483a9027-a8b4-4086-87a1-2b3251a21744" >
+		<http:listener doc:name="8082:POST/generate" doc:id="4c129b46-b1eb-43fa-b066-a88e6ed6807e" config-ref="HTTP_Listener_config" path="${listener.path}"/>
+		<logger level="INFO" doc:name="START" doc:id="041b42e7-1a6c-4796-9fc9-637598d48ef1" message="STARTED p1_generateFlow" />
+		<choice doc:name="code generator" doc:id="4eabe1b3-50f7-4c7f-a49c-eb69e7c60aad" >
+			<when expression='#[attributes.queryParams.codetype=="ean"]'>
+				<set-variable value='#[now() as String {format: "MMddhhmmssSSS"}]' doc:name="generated" doc:id="afc2e888-651c-4f44-8db4-857a400491e2" variableName="generated" />
+			</when>
+			<when expression='#[attributes.queryParams.codetype=="upc"]'>
+				<set-variable value='#[now() as String {format: "MMddhhmmssSS"}]' doc:name="generated" doc:id="3f5d12fe-a953-4e0e-9f3e-8058d5c645b9" variableName="generated" />
+			</when>
+			<when expression='#[attributes.queryParams.codetype=="qr"]'>
+				<set-variable value="#[uuid()]" doc:name="generated" doc:id="acdf6b49-8dd6-41c5-96c1-34e9ec89ba2e" variableName="generated" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="047df3a1-e1fe-4c20-aac3-0fefb4440b1f" />
+			</otherwise>
+		</choice>
+		<http:request method="POST" doc:name="8083:POST/generate" doc:id="23a51433-ba7a-4fac-a0cf-e154fa4fc9b2" config-ref="HTTP_Request_config_to_8083" path="/${requester.path}">
+			<http:headers><![CDATA[#[output application/java
 ---
 {
 	"codetype" : "upc"
 }]]]></http:headers>
-			<http:query-params ><![CDATA[#[output application/java
+			<http:query-params><![CDATA[#[output application/java
 ---
 {
-	"codetype" : "upc",
-	"stage" : attributes.queryParams.stage
+	"codetype": attributes.queryParams.codetype,
+	"stage": attributes.queryParams.stage,
+	"code": vars.generated
 }]]]></http:query-params>
 		</http:request>
-		<logger level="INFO" doc:name="FINISH" doc:id="246ef128-0744-445c-9db5-79c4594c50ba" message="FINISHED p1_generateUPC flow" />
-	</flow>
-	<flow name="p1_generateQR" doc:id="4e6f8a8a-570f-4506-9c8c-352532e29d06">
-		<http:listener doc:name="8082:POST/generate/qr" doc:id="17714eb2-4b50-464f-8452-7008f2eeffc9" config-ref="HTTP_Listener_config_8082" path="/qr" />
-		<logger level="INFO" doc:name="START" doc:id="a75e9337-3eb1-4159-9624-d200126f42b8" message="STARTED p1_generateQR flow" />
-		<set-variable value="#[uuid()]" doc:name="generatedQR" doc:id="acdf6b49-8dd6-41c5-96c1-34e9ec89ba2e" variableName="generatedQR"/>
-		<set-payload value="#[vars.generatedQR as String]" doc:name="Set Payload to generatedQR" doc:id="3cb31ae4-1d2c-452c-952e-47798f06fa1a" />
-		<http:request method="POST" doc:name="Request_to_8083" doc:id="2bd9b8e8-bff1-4fde-af83-c3b14b0bb266" config-ref="HTTP_Request_config_to_8083" path="/${requester.path}">
-			<http:headers ><![CDATA[#[output application/java
+		<ee:transform doc:name="response payload" doc:id="d5cdc4f6-d4af-40e9-8dce-6285369e4094">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
 ---
 {
-	"codetype" : "qr"
-}]]]></http:headers>
-			<http:query-params ><![CDATA[#[output application/java
----
-{
-	"codetype" : "qr",
-	"stage" : attributes.queryParams.stage
-}]]]></http:query-params>
-		</http:request>
-		<logger level="INFO" doc:name="FINISH" doc:id="eff30916-efd9-4159-a65b-3c9f734043c1" message="FINISHED p1_generateQR flow" />
+	"code": vars.generated as String
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="FINISH" doc:id="246ef128-0744-445c-9db5-79c4594c50ba" message="FINISHED p1_generateFlow" />
 	</flow>
 </mule>

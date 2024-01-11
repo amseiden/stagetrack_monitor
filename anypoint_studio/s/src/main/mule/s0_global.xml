@@ -14,7 +14,7 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 	<configuration-properties doc:name="Configuration properties" doc:id="6aee3d82-d5fb-4645-9b13-64ec0b5adada" file="s_stagetrack_${env}.yaml" />
 	<global-property doc:name="Global Property" doc:id="f6c7d3e2-b0f0-4aba-b13b-64fb390d0af2" name="env" value="QA" />
 
-	<db:config name="Database_Config_sa_moara_dusmanii" doc:name="Database Config" doc:id="ecf3fd93-433b-4230-9aaa-133434955caa" >
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="ecf3fd93-433b-4230-9aaa-133434955caa" >
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="root" database="${db.name}" />
 	</db:config>
 	<error-handler name="0_global_Error_Handler" doc:id="a491c5da-9ac5-4605-aa63-a7fb882f006f" >

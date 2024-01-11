@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 	<flow name="e2_identifierFlow" doc:id="5feedefd-28a1-487f-839d-b9c16c6ec4c2" >
 		<http:listener doc:name="8081:GET/identify" doc:id="326e72b2-ea16-4af7-af7b-b75470d761e6" config-ref="HTTP_Listener_config_8081" path="${listener.path2}"/>
 		<logger level="INFO" doc:name="e2_identifierFlow START Log" doc:id="5109ea62-cc83-49d3-8997-78af113ea089" message="STARTED e2_identifierFlow"/>
-		<http:request method="GET" doc:name="Request_to_8082" doc:id="eac6f6a8-7af4-412b-94e8-90cfab98a3f2" config-ref="HTTP_Request_configuration_to_8082" path="/${requester.path2}">
+		<http:request method="GET" doc:name="8082:GET/identify" doc:id="eac6f6a8-7af4-412b-94e8-90cfab98a3f2" config-ref="HTTP_Request_configuration_to_8082" path="/${requester.path2}">
 			<http:query-params ><![CDATA[#[output application/java
 ---
 {
