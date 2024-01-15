@@ -26,7 +26,6 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		</db:update>
 	</sub-flow>
 	<flow name="s3_setstageFlow" doc:id="fa7a98f8-9b23-46b0-a2e8-1b6633fae5ca" >
-		<http:listener doc:name="8083:PUT/setstage" doc:id="14abccb4-e8cb-4bf6-adb6-96c1de25c9d1" config-ref="HTTP_Listener_config_8083" path="${listener.path3}"/>
 		<logger level="INFO" doc:name="START" doc:id="562989ac-cfe1-475d-a780-fca04d2ecdac" message="STARTED s3_setstageFlow" />
 		<choice doc:name="codetype" doc:id="6cbf9c8b-8cad-4f8c-aa5e-190ebbe8a3e0">
 			<when expression='#[attributes.queryParams.codetype=="ean"]'>

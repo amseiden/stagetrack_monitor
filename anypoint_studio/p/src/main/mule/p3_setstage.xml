@@ -6,14 +6,13 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="p3_setstageFlow" doc:id="ab046383-20f6-4738-8bdb-df3e85a0f1cd" >
-		<http:listener doc:name="8082:PUT/setstage" doc:id="cf056026-3c05-4d84-9016-c07c43bb8c2d" config-ref="HTTP_Listener_config" path="${listener.path3}"/>
 		<logger level="INFO" doc:name="START" doc:id="78fe0299-6dd3-4600-90a9-3be55cbf283a" message="STARTED p3_setstageFlow"/>
 		<set-variable value="#[attributes.queryParams.code]" doc:name="'code'" doc:id="68b7a80e-b117-451f-a2cc-1f0fbc98350c" variableName="code" />
 		<set-variable value="#[attributes.queryParams.stage]" doc:name="'stage'" doc:id="0e3a6932-cda9-4776-a100-84fe0b575d43" variableName="stage" />
 		<choice doc:name="identify codetype" doc:id="8b6a2187-9964-4226-b705-aa62bb553874">
 			<when expression="#[sizeOf(attributes.queryParams.code)==13]">
 				<set-variable value="ean" doc:name="codetype ean" doc:id="952992a9-1fc8-4391-a912-31d0b1cf65dc" variableName="codetype" />
-				<http:request method="GET" doc:name="8083:PUT/setstage?ean" doc:id="ba5bb0cf-9878-4647-a267-91f3298589ed" config-ref="HTTP_Request_config_to_8083" path="${requester.path3}">
+				<http:request method="PUT" doc:name="8083:PUT/setstage?ean" doc:id="ba5bb0cf-9878-4647-a267-91f3298589ed" config-ref="HTTP_Request_config_to_8083" path="${requester.path3}">
 					<http:query-params><![CDATA[#[output application/java
 ---
 {
@@ -25,7 +24,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			</when>
 			<when expression="#[sizeOf(attributes.queryParams.code)==12]">
 				<set-variable value="upc" doc:name="codetype upc" doc:id="c5bea83a-c228-4237-96c8-31c66b6c8834" variableName="codetype" />
-				<http:request method="GET" doc:name="8083:PUT/setstage?upc" doc:id="a97231ea-3e7e-4110-8822-b95d0f287d1f" config-ref="HTTP_Request_config_to_8083" path="${requester.path3}">
+				<http:request method="PUT" doc:name="8083:PUT/setstage?upc" doc:id="a97231ea-3e7e-4110-8822-b95d0f287d1f" config-ref="HTTP_Request_config_to_8083" path="${requester.path3}">
 					<http:query-params><![CDATA[#[output application/java
 ---
 {
@@ -37,7 +36,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			</when>
 			<when expression="#[sizeOf(attributes.queryParams.code)==36]">
 				<set-variable value="qr" doc:name="codetype qr" doc:id="7041413f-9a82-40d5-aff0-eaae84d49d98" variableName="codetype" />
-				<http:request method="GET" doc:name="8083:PUT/setstage?qr" doc:id="29a6fe6e-b442-4e98-9914-a3f78e10b11f" config-ref="HTTP_Request_config_to_8083" path="${requester.path3}">
+				<http:request method="PUT" doc:name="8083:PUT/setstage?qr" doc:id="29a6fe6e-b442-4e98-9914-a3f78e10b11f" config-ref="HTTP_Request_config_to_8083" path="${requester.path3}">
 					<http:query-params><![CDATA[#[output application/java
 ---
 {

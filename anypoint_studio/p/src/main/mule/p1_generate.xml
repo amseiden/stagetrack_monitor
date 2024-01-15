@@ -6,7 +6,6 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<flow name="p1_generateFlow" doc:id="483a9027-a8b4-4086-87a1-2b3251a21744" >
-		<http:listener doc:name="8082:POST/generate" doc:id="4c129b46-b1eb-43fa-b066-a88e6ed6807e" config-ref="HTTP_Listener_config" path="${listener.path}"/>
 		<logger level="INFO" doc:name="START" doc:id="041b42e7-1a6c-4796-9fc9-637598d48ef1" message="STARTED p1_generateFlow" />
 		<choice doc:name="code generator" doc:id="4eabe1b3-50f7-4c7f-a49c-eb69e7c60aad" >
 			<when expression='#[attributes.queryParams.codetype=="ean"]'>

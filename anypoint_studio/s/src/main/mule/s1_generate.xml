@@ -24,7 +24,6 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 		</db:insert>
 	</sub-flow>
 	<flow name="s1_generateFlow" doc:id="c77506f5-cbeb-4d50-8ec0-c42a7c8de59c" >
-		<http:listener doc:name="8083:POST/generate" doc:id="794aa974-83fb-48ff-8326-e49b2ad45fa5" config-ref="HTTP_Listener_config_8083" path="${listener.path}"/>
 		<logger level="INFO" doc:name="START" doc:id="15b79d04-cc2e-4a6c-9ea3-2b0992ddfede" message="STARTED s1_generateFlow"/>
 		<choice doc:name="Choice" doc:id="14135929-033a-4442-bd59-0dd592679959" >
 			<when expression='#[attributes.queryParams.codetype=="ean"]'>

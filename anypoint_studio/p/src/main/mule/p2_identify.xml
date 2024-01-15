@@ -7,7 +7,6 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="p2_identifyFlow" doc:id="8036472b-8944-49ed-bf3f-a3548bbb403c" >
-		<http:listener doc:name="8082:GET/identify" doc:id="0f045939-b9a2-4a18-b717-d70c5d53f5cc" config-ref="HTTP_Listener_config" path="${listener.path2}"/>
 		<logger level="INFO" doc:name="START p2_identifyFlow" doc:id="27e794d7-b073-4720-a300-475807f9d1c8" message="STARTED p2_identifyFlow" />
 		<choice doc:name="identify codetype" doc:id="2f49e820-1b45-42ab-a5e1-47f9a2932898" >
 			<when expression="#[sizeOf(attributes.queryParams.code)==13]">

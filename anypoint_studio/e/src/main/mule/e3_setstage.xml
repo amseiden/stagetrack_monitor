@@ -5,7 +5,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	<flow name="e3_setstageFlow" doc:id="301a56c9-b971-4627-9fda-ef3f8566f3f8" >
-		<http:listener doc:name="8081:PUT/setstage" doc:id="d4cfb895-76e4-40ea-9d42-4395bd89f841" config-ref="HTTP_Listener_config_8081" path="${listener.path3}"/>
 		<logger level="INFO" doc:name="START " doc:id="8fb9c274-fbf5-4cdc-992a-166757bc361a" message="STARTED e3_setstageFlow"/>
 		<http:request method="PUT" doc:name="8082:PUT/setstage" doc:id="0e364bd1-f735-49bf-8f2a-1812af4ab89c" config-ref="HTTP_Request_configuration_to_8082" path="${requester.path3}">
 			<http:query-params ><![CDATA[#[output application/java

@@ -9,9 +9,8 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	
 	
-	<flow name="e1_GenerateQRCodeFlow">
+	<flow name="e1_generateFlow" doc:id="b585dbf6-4751-4115-940c-1522f3a5e82b">
     <!-- Generare UUID -->
-    <http:listener doc:name="8081:POST/generate" doc:id="3d7f878d-5b3d-465d-a6fa-8693f96d5de2" config-ref="HTTP_Listener_config_8081" path="${listener.path}"/>
 		<logger level="INFO" doc:name="START " doc:id="0b587a34-1472-4fc5-b08f-63b484944e62" message="STARTED e1_GenerateQRCodeFlow"/>
 		<http:request method="POST" doc:name="8082:POST/generate" doc:id="86e259fd-cdd9-47e8-85bd-e1535cc1ae53" config-ref="HTTP_Request_configuration_to_8082" path="/${requester.path}">
 			<http:query-params ><![CDATA[#[output application/java
@@ -31,7 +30,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
     
     <!-- Generare QR code pentru UUID -->
 
-    <!-- Alte pași pentru gestionarea entităților circulante -->
+    <!-- Alti pași pentru gestionarea entităților circulante -->
 	</flow>
 	
 	</mule>

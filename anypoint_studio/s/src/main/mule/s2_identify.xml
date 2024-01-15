@@ -8,7 +8,6 @@ http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/cu
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
 	<flow name="s2_identifyFlow" doc:id="a597f840-6cc3-4564-af9d-4ebbc9a9ce74" >
-		<http:listener doc:name="8083:GET/identify" doc:id="548d589b-def3-4f29-a7d0-047af16d2ebb" config-ref="HTTP_Listener_config_8083" path="${listener.path2}"/>
 		<logger level="INFO" doc:name="START s2_identifyFlow" doc:id="4265cfdc-2bce-4b7d-95bd-90fd9bdbdfb1" message="STARTED s2_identifyFlow"/>
 		<choice doc:name="codetype" doc:id="89f4140d-10ba-4725-8051-81347738b454" >
 			<when expression='#[attributes.queryParams.codetype=="ean"]'>

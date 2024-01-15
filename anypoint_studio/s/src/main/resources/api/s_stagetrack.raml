@@ -1,0 +1,67 @@
+#%RAML 1.0
+title: s_stagetrack
+description: SYSTEM layer of "stagetrack" app 
+
+types:
+  ean_query: 
+    type: object
+    example: !include /examples/generate.json
+
+/generate: 
+  description: 'Generates a code based on the specified barcode type'
+  post:
+    queryParameters:
+      codetype:
+        required: true
+        example: !include /examples/generate.json
+      stage?:
+        example: !include /examples/generate.json
+    responses:
+      201:
+        body:
+          application/json:
+            type: object
+            example: !include /examples/gen_resp.json
+      200: 
+        body:
+          application/json:
+            type: string
+            example: "INVALID CODETYPE"
+              
+/identify: 
+  description: 'Identifies barcode`s stage based on the specified code'
+  get:
+    queryParameters:
+      code:
+        required: true
+        example: !include /examples/identify.json
+    responses:
+      200:
+        body:
+          application/json:
+            type: string
+            example: !include /examples/id_resp.json
+      204: 
+        body:
+          application/json:
+            type: string
+            example: "STAGE VALUE NOT FOUND"
+
+/setstage:
+  description: 'Updates barcode`s stage based on the specified code'
+  put:
+    queryParameters:
+      code:
+        required: true
+        example: !include /examples/setstage.json
+      stage:
+        required: true
+        example: !include /examples/setstage.json
+    responses:
+      200:
+        body:
+          application/json:
+            type: object
+            example: !include /examples/set_resp.json
+
+    
